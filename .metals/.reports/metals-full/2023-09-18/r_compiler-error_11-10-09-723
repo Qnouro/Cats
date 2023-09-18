@@ -1,0 +1,105 @@
+scala.MatchError: implicit class <error> extends  (of class scala.reflect.internal.Trees$ClassDef)
+occurred in the presentation compiler.
+
+action parameters:
+offset: 821
+uri: file://<WORKSPACE>/cats/src/main/scala/recap/TypeClasses.scala
+text:
+package recap
+
+object TypeClasses {
+
+    class Person(val name: String, val age: Int)
+
+    // 1- Define the class
+    abstract class JsonSerializer[T] {
+        def toJson: String
+    }
+
+
+    // 2- Define the instances
+    implicit object StringSerializer extends JsonSerializer[String] {
+        override def toJson(value: String): String = value
+    }
+
+    implicit object IntSerializer extends JsonSerializer[Int] {
+        override def toJson(value: Int): String = value.toString()
+    }
+
+    implicit object PersonSerializer extends JsonSerializer[Person] {
+        override def toJson(person: Person): String = s"""
+{
+   name: ${person.name},
+   age: ${person.age}
+}
+        """.stripMargin
+    }
+
+    // 4- Syntax sugar
+    object JsonSyntax {
+        implicit o@@b JsonSerializerSyntax[T](value: T)(implicit serializer: JsonSerializer[T]) {
+            def json: String = serializer.toJson(value)
+        }
+    }
+
+
+    def main(args: Array[String]): Unit = {
+        import JsonSyntax._
+
+        val name = "Jim"
+        val age = 24
+
+        val jim = Person(name, age)
+
+        println(jim.toJson)
+    }
+}
+
+
+error stacktrace:
+scala.tools.nsc.typechecker.Unapplies.constrParamss(Unapplies.scala:64)
+	scala.tools.nsc.typechecker.Unapplies.factoryMeth(Unapplies.scala:141)
+	scala.tools.nsc.typechecker.Unapplies.factoryMeth$(Unapplies.scala:138)
+	scala.meta.internal.pc.MetalsGlobal$MetalsInteractiveAnalyzer.factoryMeth(MetalsGlobal.scala:67)
+	scala.tools.nsc.typechecker.MethodSynthesis$MethodSynth.enterImplicitWrapper(MethodSynthesis.scala:229)
+	scala.tools.nsc.typechecker.MethodSynthesis$MethodSynth.enterImplicitWrapper$(MethodSynthesis.scala:228)
+	scala.tools.nsc.typechecker.Namers$Namer.enterImplicitWrapper(Namers.scala:59)
+	scala.tools.nsc.interactive.InteractiveAnalyzer$InteractiveNamer.enterExistingSym(Global.scala:94)
+	scala.tools.nsc.interactive.InteractiveAnalyzer$InteractiveNamer.enterExistingSym$(Global.scala:80)
+	scala.tools.nsc.interactive.InteractiveAnalyzer$$anon$2.enterExistingSym(Global.scala:51)
+	scala.tools.nsc.typechecker.Namers$Namer.standardEnterSym(Namers.scala:306)
+	scala.tools.nsc.typechecker.AnalyzerPlugins.pluginsEnterSym(AnalyzerPlugins.scala:479)
+	scala.tools.nsc.typechecker.AnalyzerPlugins.pluginsEnterSym$(AnalyzerPlugins.scala:478)
+	scala.meta.internal.pc.MetalsGlobal$MetalsInteractiveAnalyzer.pluginsEnterSym(MetalsGlobal.scala:67)
+	scala.tools.nsc.typechecker.Namers$Namer.enterSym(Namers.scala:280)
+	scala.tools.nsc.typechecker.Typers$Typer.enterSym(Typers.scala:1939)
+	scala.tools.nsc.typechecker.Typers$Typer.$anonfun$enterSyms$1(Typers.scala:1934)
+	scala.tools.nsc.typechecker.Typers$Typer.enterSyms(Typers.scala:1934)
+	scala.tools.nsc.typechecker.Typers$Typer.typedTemplate(Typers.scala:1996)
+	scala.tools.nsc.typechecker.Typers$Typer.typedModuleDef(Typers.scala:1889)
+	scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5707)
+	scala.tools.nsc.typechecker.Typers$Typer.typed(Typers.scala:5785)
+	scala.tools.nsc.typechecker.Typers$Typer.typedStat$1(Typers.scala:5849)
+	scala.tools.nsc.typechecker.Typers$Typer.$anonfun$typedStats$10(Typers.scala:3341)
+	scala.tools.nsc.typechecker.Typers$Typer.typedStats(Typers.scala:3341)
+	scala.tools.nsc.typechecker.Typers$Typer.typedTemplate(Typers.scala:2023)
+	scala.tools.nsc.typechecker.Typers$Typer.typedModuleDef(Typers.scala:1889)
+	scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5707)
+	scala.tools.nsc.typechecker.Typers$Typer.typed(Typers.scala:5785)
+	scala.tools.nsc.typechecker.Typers$Typer.typedStat$1(Typers.scala:5849)
+	scala.tools.nsc.typechecker.Typers$Typer.$anonfun$typedStats$10(Typers.scala:3341)
+	scala.tools.nsc.typechecker.Typers$Typer.typedStats(Typers.scala:3341)
+	scala.tools.nsc.typechecker.Typers$Typer.typedPackageDef$1(Typers.scala:5417)
+	scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5709)
+	scala.tools.nsc.typechecker.Typers$Typer.typed(Typers.scala:5785)
+	scala.tools.nsc.typechecker.Analyzer$typerFactory$TyperPhase.apply(Analyzer.scala:114)
+	scala.tools.nsc.Global$GlobalPhase.applyPhase(Global.scala:454)
+	scala.tools.nsc.interactive.Global$TyperRun.$anonfun$applyPhase$1(Global.scala:1341)
+	scala.tools.nsc.interactive.Global$TyperRun.applyPhase(Global.scala:1341)
+	scala.tools.nsc.interactive.Global$TyperRun.typeCheck(Global.scala:1334)
+	scala.tools.nsc.interactive.Global.typeCheck(Global.scala:666)
+	scala.tools.nsc.interactive.Global.typedTreeAt(Global.scala:815)
+	scala.tools.nsc.interactive.Global.completionsAt(Global.scala:1226)
+	scala.meta.internal.pc.CompletionProvider.safeCompletionsAt(CompletionProvider.scala:449)
+	scala.meta.internal.pc.CompletionProvider.completions(CompletionProvider.scala:58)
+	scala.meta.internal.pc.ScalaPresentationCompiler.$anonfun$complete$1(ScalaPresentationCompiler.scala:163)

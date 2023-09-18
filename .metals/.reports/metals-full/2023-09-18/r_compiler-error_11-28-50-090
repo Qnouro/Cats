@@ -1,0 +1,130 @@
+file%3A%2F%2F%2Fhome%2Fqnouro%2FDesktop%2Fprojects%2Fcats%2Fcats%2Fsrc%2Fmain%2Fscala%2Frecap%2FTypeClasses.scala:22: error: type application is not allowed for postfix operators
+    given JsonSerializer[Person] with {
+                                 ^
+occurred in the presentation compiler.
+
+action parameters:
+uri: file://<WORKSPACE>/cats/src/main/scala/recap/TypeClasses.scala
+text:
+package recap
+
+object TypeClasses {
+
+    class Person(val name: String, val age: Int)
+
+    // 1- Define the class
+    abstract class JsonSerializer[T] {
+        def toJson: String
+    }
+
+
+    // 2- Define the instances
+    implicit object StringSerializer extends JsonSerializer[String] {
+        override def toJson(value: String): String = value
+    }
+
+    implicit object IntSerializer extends JsonSerializer[Int] {
+        override def toJson(value: Int): String = value.toString()
+    }
+
+    given JsonSerializer[Person] with {
+        override def toJson(person: Person): String = s"""
+{
+   name: ${person.name},
+   age: ${person.age}
+}
+        """.stripMargin
+    }
+
+    // 4- Syntax sugar
+    object JsonSyntax {
+        implicit class JsonSerializerSyntax[T](value: T)(using serializer: JsonSerializer[T]) {
+            def toJson: String = serializer.toJson(value)
+        }
+    }
+
+
+    def main(args: Array[String]): Unit = {
+        // import JsonSyntax._
+
+        // val name = "Jim"
+        // val age = 24
+
+        // val jim = Person(name, age)
+
+        // println(jim.toJson)
+    }
+}
+
+
+error stacktrace:
+scala.meta.internal.parsers.Reporter.syntaxError(Reporter.scala:16)
+	scala.meta.internal.parsers.Reporter.syntaxError$(Reporter.scala:16)
+	scala.meta.internal.parsers.Reporter$$anon$1.syntaxError(Reporter.scala:22)
+	scala.meta.internal.parsers.Reporter.syntaxError(Reporter.scala:17)
+	scala.meta.internal.parsers.Reporter.syntaxError$(Reporter.scala:17)
+	scala.meta.internal.parsers.Reporter$$anon$1.syntaxError(Reporter.scala:22)
+	scala.meta.internal.parsers.ScalametaParser.getPostfixOrNextRhs$1(ScalametaParser.scala:2085)
+	scala.meta.internal.parsers.ScalametaParser.loop$6(ScalametaParser.scala:2096)
+	scala.meta.internal.parsers.ScalametaParser.postfixExpr(ScalametaParser.scala:2124)
+	scala.meta.internal.parsers.ScalametaParser.postfixExpr(ScalametaParser.scala:2028)
+	scala.meta.internal.parsers.ScalametaParser.$anonfun$expr$2(ScalametaParser.scala:1607)
+	scala.meta.internal.parsers.ScalametaParser.atPosOpt(ScalametaParser.scala:303)
+	scala.meta.internal.parsers.ScalametaParser.autoPosOpt(ScalametaParser.scala:347)
+	scala.meta.internal.parsers.ScalametaParser.expr(ScalametaParser.scala:1512)
+	scala.meta.internal.parsers.ScalametaParser$$anonfun$templateStat$1.applyOrElse(ScalametaParser.scala:4423)
+	scala.meta.internal.parsers.ScalametaParser$$anonfun$templateStat$1.applyOrElse(ScalametaParser.scala:4409)
+	scala.PartialFunction.$anonfun$runWith$1$adapted(PartialFunction.scala:145)
+	scala.meta.internal.parsers.ScalametaParser.statSeqBuf(ScalametaParser.scala:4357)
+	scala.meta.internal.parsers.ScalametaParser.getStats$2(ScalametaParser.scala:4399)
+	scala.meta.internal.parsers.ScalametaParser.$anonfun$scala$meta$internal$parsers$ScalametaParser$$templateStatSeq$3(ScalametaParser.scala:4400)
+	scala.meta.internal.parsers.ScalametaParser.$anonfun$scala$meta$internal$parsers$ScalametaParser$$templateStatSeq$3$adapted(ScalametaParser.scala:4397)
+	scala.meta.internal.parsers.ScalametaParser.scala$meta$internal$parsers$ScalametaParser$$listBy(ScalametaParser.scala:505)
+	scala.meta.internal.parsers.ScalametaParser.scala$meta$internal$parsers$ScalametaParser$$templateStatSeq(ScalametaParser.scala:4397)
+	scala.meta.internal.parsers.ScalametaParser.scala$meta$internal$parsers$ScalametaParser$$templateStatSeq(ScalametaParser.scala:4386)
+	scala.meta.internal.parsers.ScalametaParser.$anonfun$templateBody$1(ScalametaParser.scala:4237)
+	scala.meta.internal.parsers.ScalametaParser.inBracesOr(ScalametaParser.scala:245)
+	scala.meta.internal.parsers.ScalametaParser.inBraces(ScalametaParser.scala:241)
+	scala.meta.internal.parsers.ScalametaParser.templateBody(ScalametaParser.scala:4237)
+	scala.meta.internal.parsers.ScalametaParser.templateBodyOpt(ScalametaParser.scala:4241)
+	scala.meta.internal.parsers.ScalametaParser.templateAfterExtends(ScalametaParser.scala:4184)
+	scala.meta.internal.parsers.ScalametaParser.$anonfun$templateOpt$1(ScalametaParser.scala:4232)
+	scala.meta.internal.parsers.ScalametaParser.atPos(ScalametaParser.scala:300)
+	scala.meta.internal.parsers.ScalametaParser.autoPos(ScalametaParser.scala:346)
+	scala.meta.internal.parsers.ScalametaParser.templateOpt(ScalametaParser.scala:4222)
+	scala.meta.internal.parsers.ScalametaParser.$anonfun$objectDef$1(ScalametaParser.scala:3936)
+	scala.meta.internal.parsers.ScalametaParser.autoEndPos(ScalametaParser.scala:349)
+	scala.meta.internal.parsers.ScalametaParser.autoEndPos(ScalametaParser.scala:354)
+	scala.meta.internal.parsers.ScalametaParser.objectDef(ScalametaParser.scala:3928)
+	scala.meta.internal.parsers.ScalametaParser.tmplDef(ScalametaParser.scala:3805)
+	scala.meta.internal.parsers.ScalametaParser.topLevelTmplDef(ScalametaParser.scala:3786)
+	scala.meta.internal.parsers.ScalametaParser$$anonfun$2.applyOrElse(ScalametaParser.scala:4378)
+	scala.meta.internal.parsers.ScalametaParser$$anonfun$2.applyOrElse(ScalametaParser.scala:4366)
+	scala.PartialFunction.$anonfun$runWith$1$adapted(PartialFunction.scala:145)
+	scala.meta.internal.parsers.ScalametaParser.statSeqBuf(ScalametaParser.scala:4357)
+	scala.meta.internal.parsers.ScalametaParser.bracelessPackageStats$1(ScalametaParser.scala:4579)
+	scala.meta.internal.parsers.ScalametaParser.$anonfun$batchSource$11(ScalametaParser.scala:4590)
+	scala.meta.internal.parsers.ScalametaParser.autoEndPos(ScalametaParser.scala:349)
+	scala.meta.internal.parsers.ScalametaParser.$anonfun$batchSource$10(ScalametaParser.scala:4590)
+	scala.meta.internal.parsers.ScalametaParser.tryParse(ScalametaParser.scala:201)
+	scala.meta.internal.parsers.ScalametaParser.$anonfun$batchSource$1(ScalametaParser.scala:4582)
+	scala.meta.internal.parsers.ScalametaParser.atPos(ScalametaParser.scala:300)
+	scala.meta.internal.parsers.ScalametaParser.autoPos(ScalametaParser.scala:346)
+	scala.meta.internal.parsers.ScalametaParser.batchSource(ScalametaParser.scala:4550)
+	scala.meta.internal.parsers.ScalametaParser.$anonfun$source$1(ScalametaParser.scala:4543)
+	scala.meta.internal.parsers.ScalametaParser.atPos(ScalametaParser.scala:300)
+	scala.meta.internal.parsers.ScalametaParser.autoPos(ScalametaParser.scala:346)
+	scala.meta.internal.parsers.ScalametaParser.source(ScalametaParser.scala:4543)
+	scala.meta.internal.parsers.ScalametaParser.entrypointSource(ScalametaParser.scala:4548)
+	scala.meta.internal.parsers.ScalametaParser.parseSourceImpl(ScalametaParser.scala:127)
+	scala.meta.internal.parsers.ScalametaParser.$anonfun$parseSource$1(ScalametaParser.scala:124)
+	scala.meta.internal.parsers.ScalametaParser.parseRuleAfterBOF(ScalametaParser.scala:51)
+	scala.meta.internal.parsers.ScalametaParser.parseRule(ScalametaParser.scala:46)
+	scala.meta.internal.parsers.ScalametaParser.parseSource(ScalametaParser.scala:124)
+	scala.meta.parsers.Parse$.$anonfun$parseSource$1(Parse.scala:29)
+	scala.meta.parsers.Parse$$anon$1.apply(Parse.scala:36)
+	scala.meta.parsers.Api$XtensionParseDialectInput.parse(Api.scala:25)
+	scala.meta.internal.semanticdb.scalac.ParseOps$XtensionCompilationUnitSource.toSource(ParseOps.scala:17)
+	scala.meta.internal.semanticdb.scalac.TextDocumentOps$XtensionCompilationUnitDocument.toTextDocument(TextDocumentOps.scala:206)
+	scala.meta.internal.pc.SemanticdbTextDocumentProvider.textDocument(SemanticdbTextDocumentProvider.scala:54)
+	scala.meta.internal.pc.ScalaPresentationCompiler.$anonfun$semanticdbTextDocument$1(ScalaPresentationCompiler.scala:350)
